@@ -130,14 +130,12 @@ class KoTH:
     def monitor(self):
         # main workflow that will re-update every 10 minutes
         # TODO: 
-        # - [x] 0. Shutdown all the process that is not from the challenge
-        
+        # - [x] 0. Shutdown all the process that is not from the challenge 
         self.kill_all_process()
         # - [x] 1. Update leaderboard
         headline = self.point_update()
+        # - [x] 2. Logging the whole dashboard to terminal, announcing the next time the dashboard will be updated
         self.logging_dashboard(headline)
-        # 3. Logging the whole dashboard to terminal, announcing the next time the dashboard will be updated
-    
     def point_update(self) -> str:
         updated_king = get_current_king()
 
@@ -192,6 +190,7 @@ class KoTH:
         # 2. print the current king `🎉 CURRENT 👑 {current_king} 🎉`
         # 3. logging the whole dashboard (based on the schema that will be provided later)
         # 4. print the next time the dashboard will be updated
+
         self.console.clear_live()
         self.log_capture_string = StringIO()
         self.log_console = Console(file=self.log_capture_string, force_terminal=True, )
@@ -205,7 +204,6 @@ class KoTH:
         with Live(self.layout, console = self.console, screen=False, refresh_per_second=50):
             banner = open("banner.txt", "r").read()
             self.layout["banner"].update(Text.from_markup(banner, justify="center", style="bold"))
-
             ### ranking table
             self.table = Table(show_footer = False)
             self.table_centered = Align.center(self.table)
@@ -233,7 +231,6 @@ class KoTH:
 
             # Update the layout with the new table
             self.layout["upper"].update(self.table_centered)
-            
             self.table.border_style = "bright_blue"
             self.table.rows[0].style = "bold yellow"
             self.logger.info("[bold blue]Leaderboard updated![/]", extra={"markup": True})
