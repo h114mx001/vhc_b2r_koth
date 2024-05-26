@@ -1,0 +1,5 @@
+- hosts: localhost
+  tasks:
+    - name: Remove file upload 
+      shell: 
+        cmd: bash -c "rm -rf /home/werkzeug/sources/uploads/*"

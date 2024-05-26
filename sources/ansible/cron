@@ -1,0 +1,6 @@
+# must be ended with a new line "LF" (Unix) and not "CRLF" (Windows)
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+* * * * * root /usr/local/bin/ansible-parallel /opt/automated/tasks/webapp/*.yml > /var/log/ansible-parallel.log 2>&1
+# * * * * * root /root/reset_machine.sh > /var/log/reset_machine.log 2>&1
+# An empty line is required at the end of this file for a valid cron file.
+

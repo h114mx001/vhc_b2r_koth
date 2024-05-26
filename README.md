@@ -31,8 +31,9 @@ The only winner is the one who has the highest score. The score will be updating
 The usage of tools is allowed, but we recommend you not to install any new softwares to the system (in case you got RCE). We provided these default tools: 
 
 + `bash`
-+ `python3`
++ `python3` with support of 2 libraries: `pycryptodome` and `pwntools`
 + `nvim`
++ `gdb` with support of `gef`
 
 Indeed, with your programming & Linux skills, we are sure that you will survive :)
 
@@ -51,5 +52,6 @@ Indeed, with your programming & Linux skills, we are sure that you will survive 
 ./monitor: A simple script to monitor the king position
 ./sources: Source code of the challenges
 ./README.md: This file
-Dockerfile: Dockerfile to build the image
 ```
+
+Each folder will have its own README to let you know what to do.

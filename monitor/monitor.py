@@ -82,16 +82,16 @@ class KoTH:
 
         ### frontend
         self.console = Console()
-        self.console.size = (210, 52)
+        # self.console.size = (210, 52)
 
         ### layouts
         self.layout = Layout()
         # self.layout.size = None
         # self.layout.ratio = 2
         self.layout.split_column(Layout(name="banner"), Layout(name="upper"), Layout(name="lower"))
-        self.layout["banner"].size = 17
-        self.layout["upper"].size = 20
-        self.layout["lower"].size = 15
+        self.layout["banner"].size = 16
+        self.layout["upper"].ratio = 2
+        self.layout["lower"].ratio = 1
         self.console.clear()
 
     def kill_all_process(self):
@@ -136,6 +136,16 @@ class KoTH:
         headline = self.point_update()
         # - [x] 2. Logging the whole dashboard to terminal, announcing the next time the dashboard will be updated
         self.logging_dashboard(headline)
+
+    def _update_status_king(self, new_king_entry, updated_king):
+        # set last king time
+        self.cursor.execute(f"UPDATE koth SET last_king = '{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE player_name = '{updated_king}'")
+        # set king count
+        self.cursor.execute(f"UPDATE koth SET count_kings = {new_king_entry[4] + 1} WHERE player_name = '{updated_king}'")
+        # update the current king
+        self.current_king = updated_king
+        return True 
+    
     def point_update(self) -> str:
         updated_king = get_current_king()
 
@@ -147,6 +157,7 @@ class KoTH:
                 headline = f"[bold yellow blink]Current[/] :crown:: [bold yellow blink]{self.current_king}! Long live the King![/]"
                 current_king_entry = self.cursor.execute(f"SELECT * FROM koth WHERE player_name = '{self.current_king}'").fetchone()
                 self.cursor.execute(f"UPDATE koth SET points = {current_king_entry[3] + LONG_LIVE} WHERE player_name = '{self.current_king}'")
+                self._update_status_king(current_king_entry, updated_king)
                 return headline
             if updated_king != self.current_king:
                 # do some point adding here... += 500 + old_king's points * 25%
@@ -171,13 +182,7 @@ class KoTH:
                     old_king_entry = self.cursor.execute(f"SELECT * FROM koth WHERE player_name = '{self.current_king}'").fetchone()
                     self.cursor.execute(f"UPDATE koth SET points = {int(old_king_entry[3] - (STOLEN_PERCENTAGE/100) * old_king_entry[3])} WHERE player_name = '{self.current_king}'")
                     self.cursor.execute(f"UPDATE koth SET points = {int(new_king_entry[3] + TO_THE_NEW_KING + (STOLEN_PERCENTAGE/100) * old_king_entry[3])} WHERE player_name = '{updated_king}'")
-                
-                # set last king time
-                self.cursor.execute(f"UPDATE koth SET last_king = '{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE player_name = '{updated_king}'")
-                # set king count
-                self.cursor.execute(f"UPDATE koth SET count_kings = {new_king_entry[4] + 1} WHERE player_name = '{updated_king}'")
-                # update the current king
-                self.current_king = updated_king
+                self._update_status_king(new_king_entry, updated_king)
                 return headline
         except Exception as e:
             print(f"Error: {e}")
@@ -203,7 +208,7 @@ class KoTH:
         )
         with Live(self.layout, console = self.console, screen=False, refresh_per_second=50):
             banner = open("banner.txt", "r").read()
-            self.layout["banner"].update(Text.from_markup(banner, justify="center", style="bold"))
+            self.layout["banner"].update(Text.from_markup(banner, justify="center", style="bold blink"))
             ### ranking table
             self.table = Table(show_footer = False)
             self.table_centered = Align.center(self.table)
@@ -233,7 +238,7 @@ class KoTH:
             self.layout["upper"].update(self.table_centered)
             self.table.border_style = "bright_blue"
             self.table.rows[0].style = "bold yellow"
-            self.logger.info("[bold blue]Leaderboard updated![/]", extra={"markup": True})
+            # self.logger.info("[bold blue]Leaderboard updated![/]", extra={"markup": True})
             self.logger.info(headline, extra={"markup": True})
             # logger.info("Table updated!")
             self.logger.critical("💀 [bold red blink]All non-challenge processes are killed![/]", extra={"markup": True})
