@@ -70,6 +70,16 @@
         height: 500px;
         padding: 20px;
       }
+
+      .image {
+        background-color: #6563fe;
+        padding: 8px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
       .right {
         width: 40%;
         background-color: white;
@@ -77,38 +87,86 @@
         border-radius: 20px;
         height: 500px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      /* CSS */
+      .button-3 {
+        appearance: none;
+        background-color: #2ea44f;
+        border: 1px solid rgba(27, 31, 35, 0.15);
+        border-radius: 6px;
+        box-shadow: rgba(27, 31, 35, 0.1) 0 1px 0;
+        box-sizing: border-box;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
+          sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        padding: 6px 16px;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: middle;
+        white-space: nowrap;
+        margin-top: 20px;
+      }
+
+      .button-3:focus:not(:focus-visible):not(.focus-visible) {
+        box-shadow: none;
+        outline: none;
+      }
+
+      .button-3:hover {
+        background-color: #2c974b;
+      }
+
+      .button-3:focus {
+        box-shadow: rgba(46, 164, 79, 0.4) 0 0 0 3px;
+        outline: none;
+      }
+
+      .button-3:disabled {
+        background-color: #94d3a2;
+        border-color: rgba(27, 31, 35, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        cursor: default;
+      }
+
+      .button-3:active {
+        background-color: #298e46;
+        box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset;
       }
       .upload {
         background-color: #f5f9fd;
         width: 100%;
-        height: 350px;
+        height: 300px;
         border-radius: 10px;
-        margin-bottom: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        flex-direction: column;
       }
+      .upload > .icon {
+        margin-bottom: 20px;
+      }
+
       .storage-info {
+        margin-top: 30px;
         background-color: #f5f9fd;
         width: 100%;
         height: 100px;
         border-radius: 10px;
-      }
-      input[type="file"] {
-        display: block;
-        margin-top: 20px;
-      }
-      input[type="submit"] {
-        background-color: #4caf50;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      input[type="submit"]:hover {
-        background-color: #45a049;
-      }
-      .message {
-        margin-top: 20px;
-        font-weight: bold;
       }
       .title {
         margin: 20px 20px;
@@ -125,6 +183,20 @@
         margin: 20px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+      }
+      .file-name {
+        width: 50%;
+        font-weight: bold;
+      }
+      .file-type {
+        color: #c7c8c9;
+      }
+      .file-size {
+        color: #c7c8c9;
+      }
+      .block-file > img {
+        cursor: pointer;
       }
       .files {
         height: 100%;
@@ -148,24 +220,23 @@
       <div class="main-body">
         <div class="left">
           <div class="title">All Files</div>
-          <div class="files" id="files">
-            <div class="block-file">
-              <div class="file-name">a</div>
-              <div class="file-type">JPEG</div>
-              <div class="file-size">10MB</div>
-              <div class="get-file">Icon</div>
-            </div>
-            <div class="block-file">
-              <div class="file-name">a</div>
-              <div class="file-type">JPEG</div>
-              <div class="file"></div>
-            </div>
-          </div>
+          <div class="files" id="files"></div>
         </div>
 
         <div class="right">
-          <div class="upload"></div>
+          <div class="upload" id="uploadFile">
+            <img
+              class="icon"
+              src="{{ url_for('static', filename='folder.png') }}"
+              width="50px"
+              height="50px"
+              alt="Upload"
+            />
+            <div>Add new file</div>
+          </div>
+          <button class="button-3" id="submitFile">Submit</button>
           <div class="storage-info"></div>
+          <input id="uploadInput" type="file" style="display: none" />
         </div>
       </div>
 
@@ -180,27 +251,70 @@
     })
       .then((response) => response.json())
       .then((data) => {
-        var data = data["data"];
+        const files = data["data"];
         const filesContainer = document.getElementById("files");
-        if (data.length === 0) {
+        if (files.length === 0) {
           const noFileDiv = document.createElement("div");
           noFileDiv.className = "no-file";
           noFileDiv.textContent = "No files found";
           filesContainer.appendChild(noFileDiv);
         } else {
-          for (let i in data) {
-          }
+          files.forEach((file) => {
+            const fileDiv = document.createElement("div");
+            fileDiv.className = "block-file";
+
+            const imageDiv = document.createElement("div");
+            imageDiv.className = "image";
+            const image = document.createElement("img");
+            image.src = "{{ url_for('static', filename='camera.png') }}"; // Assuming camera.png is an icon relevant to the file
+            image.width = "25";
+            image.height = "25";
+            imageDiv.appendChild(image);
+
+            const fileNameDiv = document.createElement("div");
+            fileNameDiv.className = "file-name";
+            fileNameDiv.textContent = file["file_name"];
+
+            const fileTypeDiv = document.createElement("div");
+            fileTypeDiv.className = "file-type";
+            fileTypeDiv.textContent = file["file_type"];
+
+            const fileSizeDiv = document.createElement("div");
+            fileSizeDiv.className = "file-size";
+            fileSizeDiv.textContent = file["file_size"];
+
+            const shareImg = document.createElement("img");
+            shareImg.src = "{{ url_for('static', filename='share.png') }}";
+            shareImg.width = "25";
+            shareImg.height = "25";
+            shareImg.alt = "Share";
+            shareImg.onclick = function () {
+              window.location.href =
+                "/?file=" +
+                encodeURIComponent(file["file_name"] + "." + file["file_type"]);
+            };
+
+            fileDiv.appendChild(imageDiv);
+            fileDiv.appendChild(fileNameDiv);
+            fileDiv.appendChild(fileTypeDiv);
+            fileDiv.appendChild(fileSizeDiv);
+            fileDiv.appendChild(shareImg);
+
+            filesContainer.appendChild(fileDiv);
+          });
         }
       })
       .catch((error) => {
         console.error("Error fetching files:", error);
       });
 
-    document.getElementById("uploadForm").onsubmit = function (event) {
+    document.getElementById("uploadFile").onclick = function (event) {
       event.preventDefault();
-
+      document.getElementById("uploadInput").click();
+    };
+    document.getElementById("submitFile").onclick = function (event) {
       var formData = new FormData();
-      var imageFile = document.getElementById("imageUpload").files[0];
+      var imageFile = document.getElementById("uploadInput").files[0];
       formData.append("file", imageFile);
       fetch("/upload", {
         method: "POST",
@@ -208,13 +322,36 @@
       })
         .then((response) => response.json())
         .then((data) => {
-          document.getElementById("message").innerText =
-            "Upload successful: " + data.message;
+          location.reload();
         })
         .catch((error) => {
           document.getElementById("message").innerText =
             "Upload failed: " + error.message;
         });
+    };
+    document.getElementById("uploadInput").onchange = function (event) {
+      if (this.files && this.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          // Remove existing content inside the uploadFile div
+          var uploadDiv = document.getElementById("uploadFile");
+          uploadDiv.innerHTML = "";
+
+          // Create an img element and set the source to the uploaded file
+          var img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.width = "100%"; // Set width to 100% of the div
+          img.style.height = "300px"; // Set a fixed height or adjust as necessary
+          img.style.borderRadius = "10px"; // Maintain the border radius
+
+          // Append the new img to the div
+          uploadDiv.appendChild(img);
+        };
+
+        // Read the file as a data URL
+        reader.readAsDataURL(this.files[0]);
+      }
     };
   </script>
 </html>

@@ -28,6 +28,10 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -r /home/werkzeug/sou
 
 RUN chown werkzeug:werkzeug /home/werkzeug/sources/uploads
 
+# Boot the vinuni cloud
+RUN chmod u+x /home/werkzeug/source/boot.sh && \
+    ./boot.sh
+
 # setuid cat - privesc gadget 1
 RUN chmod +xs /usr/bin/cat 
 

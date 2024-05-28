@@ -45,8 +45,9 @@ def get_all_files():
             if os.path.isfile(file_path):
                 file_size = os.path.getsize(file_path)
                 file_size = format_size(file_size)
-                file_name = file.split(".")[0]
-                file_type = file.split(".")[1]
+                splitted = file.split(".")
+                file_name = splitted[0:len(splitted) - 1]
+                file_type = splitted[-1]
                 data.append({
                     "file_name": file_name,
                     "file_type": file_type,
@@ -75,4 +76,4 @@ def upload_image():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(debug=True, port=5000, host="0.0.0.0")
