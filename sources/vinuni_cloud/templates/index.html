@@ -3,22 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+      rel="stylesheet"
+    />
     <title>VinUni Cloud</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f4f4f4;
+        font-family: "Roboto Mono", monospace;
+        font-optical-sizing: auto;
+        font-style: normal;
+        height: 100%;
+        width: auto;
+        background-color: rgb(234, 242, 252);
         color: #333;
+        padding: 5px;
       }
-      .header,
+      .header {
+        text-align: center;
+        padding: 10px 20px;
+      }
       .footer {
+        position: absolute;
+        bottom: 0;
+        left: 35%;
         text-align: center;
         padding: 10px 20px;
       }
       .main {
         background-color: white;
-        margin: 20px auto;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -43,11 +58,24 @@
         margin-top: 20px;
         font-weight: bold;
       }
+      .title {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .block-file {
+        width: 700px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        border-radius: 10px;
+        height: 40px;
+        padding: 5px;
+        margin: 20px;
+      }
     </style>
   </head>
   <body>
     <div class="header">
-      <h1>VinUni Cloud</h1>
+      <h1>Welcome to VinUni Cloud</h1>
     </div>
     <div class="main">
       <h2>Upload Image</h2>
@@ -63,18 +91,47 @@
       </form>
       <div class="message" id="message"></div>
     </div>
+    <div class="title">All Files</div>
+    <div class="files" id="files">
+      <div class="block-file"></div>
+      <div class="block-file"></div>
+    </div>
     <div class="footer">
       <p>© 2024 VinUni Cloud. All rights reserved.</p>
     </div>
   </body>
   <script>
+    fetch("/files", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const filesContainer = document.getElementById("files");
+
+        if (data.length === 0) {
+          const noFileDiv = document.createElement("div");
+          noFileDiv.className = "no-file";
+          noFileDiv.textContent = "No files found";
+          filesContainer.appendChild(noFileDiv);
+        } else {
+          data.forEach((file) => {
+            const fileDiv = document.createElement("div");
+            fileDiv.className = "file";
+            fileDiv.textContent = file.name;
+            filesContainer.appendChild(fileDiv);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching files:", error);
+      });
+
     document.getElementById("uploadForm").onsubmit = function (event) {
       event.preventDefault();
 
       var formData = new FormData();
       var imageFile = document.getElementById("imageUpload").files[0];
       formData.append("file", imageFile);
-
       fetch("/upload", {
         method: "POST",
         body: formData,

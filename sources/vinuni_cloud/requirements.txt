@@ -1,6 +1,1 @@
-Flask
-pycryptodome
-pyjwt
-pwntools
-ansible
-ansible-parallel
+Flask==3.0.1
