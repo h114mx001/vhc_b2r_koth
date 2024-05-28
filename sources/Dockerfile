@@ -22,7 +22,7 @@ WORKDIR /home/werkzeug
 
 RUN mkdir /home/werkzeug/sources
 
-COPY ./website /home/werkzeug/sources
+COPY ./vinuni_cloud /home/werkzeug/sources
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r /home/werkzeug/sources/requirements.txt
 
