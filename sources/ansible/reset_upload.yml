@@ -2,4 +2,4 @@
   tasks:
     - name: Remove file upload 
       shell: 
-        cmd: bash -c "rm -rf /home/werkzeug/sources/uploads/*"
+        cmd: bash -c "rm -rf /home/werkzeug/vinuni_cloud/uploads/*"

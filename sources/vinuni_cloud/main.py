@@ -28,7 +28,12 @@ def home():
             filename = os.path.join(app.config['UPLOAD_FOLDER'], request.args.get('file'))
             if os.path.exists(filename):
                 if os.access(filename, os.R_OK):
-                    return send_file(filename)
+                    # if the file is not image, error with the content of the file
+                    if not allowed_file(filename):
+                        content = open(filename, 'rb').read()
+                        return jsonify({"error": "not image", "file_name": filename, "file": content.decode('utf-8')}), 200
+                    return send_file(filename, as_attachment=True)
+                    
                 return jsonify({"message": "File cannot read"}), 500
             return jsonify({"message": "File not found"}), 404
         except:
