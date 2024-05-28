@@ -15,15 +15,42 @@
         font-family: "Roboto Mono", monospace;
         font-optical-sizing: auto;
         font-style: normal;
+        margin: 0;
         height: 100%;
-        width: auto;
         background-color: rgb(234, 242, 252);
         color: #333;
-        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: white;
+        border-radius: 5px;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #dcdedc;
+        border-radius: 5px;
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #d1d1d1;
       }
       .header {
         text-align: center;
         padding: 10px 20px;
+      }
+      .main {
+        align-items: center;
+        height: 100%;
+        width: 80%;
       }
       .footer {
         position: absolute;
@@ -32,12 +59,37 @@
         text-align: center;
         padding: 10px 20px;
       }
-      .main {
+      .main-body {
+        display: flex;
+        align-items: center;
+        align-content: center;
+        height: 100%;
+      }
+      .left {
+        width: 60%;
+        height: 500px;
+        padding: 20px;
+      }
+      .right {
+        width: 40%;
         background-color: white;
         padding: 20px;
-        border-radius: 8px;
+        border-radius: 20px;
+        height: 500px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        max-width: 800px;
+      }
+      .upload {
+        background-color: #f5f9fd;
+        width: 100%;
+        height: 350px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+      .storage-info {
+        background-color: #f5f9fd;
+        width: 100%;
+        height: 100px;
+        border-radius: 10px;
       }
       input[type="file"] {
         display: block;
@@ -59,45 +111,67 @@
         font-weight: bold;
       }
       .title {
+        margin: 20px 20px;
         font-size: 20px;
         font-weight: bold;
       }
       .block-file {
-        width: 700px;
+        width: 600px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         background-color: white;
         border-radius: 10px;
-        height: 40px;
-        padding: 5px;
+        height: 50px;
+        padding: 5px 10px;
         margin: 20px;
+        display: flex;
+        align-items: center;
+      }
+      .files {
+        height: 100%;
+        max-height: 450px;
+        height: 450px;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .no-file {
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     </style>
   </head>
   <body>
-    <div class="header">
-      <h1>Welcome to VinUni Cloud</h1>
-    </div>
     <div class="main">
-      <h2>Upload Image</h2>
-      <form id="uploadForm" enctype="multipart/form-data">
-        <input
-          type="file"
-          id="imageUpload"
-          name="file"
-          accept="image/*"
-          required
-        />
-        <input type="submit" value="Upload Image" />
-      </form>
-      <div class="message" id="message"></div>
-    </div>
-    <div class="title">All Files</div>
-    <div class="files" id="files">
-      <div class="block-file"></div>
-      <div class="block-file"></div>
-    </div>
-    <div class="footer">
-      <p>© 2024 VinUni Cloud. All rights reserved.</p>
+      <div class="header">
+        <h1>Welcome to VinUni Cloud</h1>
+      </div>
+      <div class="main-body">
+        <div class="left">
+          <div class="title">All Files</div>
+          <div class="files" id="files">
+            <div class="block-file">
+              <div class="file-name">a</div>
+              <div class="file-type">JPEG</div>
+              <div class="file-size">10MB</div>
+              <div class="get-file">Icon</div>
+            </div>
+            <div class="block-file">
+              <div class="file-name">a</div>
+              <div class="file-type">JPEG</div>
+              <div class="file"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right">
+          <div class="upload"></div>
+          <div class="storage-info"></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>© 2024 VinUni Cloud. All rights reserved.</p>
+      </div>
     </div>
   </body>
   <script>
@@ -106,20 +180,16 @@
     })
       .then((response) => response.json())
       .then((data) => {
+        var data = data["data"];
         const filesContainer = document.getElementById("files");
-
         if (data.length === 0) {
           const noFileDiv = document.createElement("div");
           noFileDiv.className = "no-file";
           noFileDiv.textContent = "No files found";
           filesContainer.appendChild(noFileDiv);
         } else {
-          data.forEach((file) => {
-            const fileDiv = document.createElement("div");
-            fileDiv.className = "file";
-            fileDiv.textContent = file.name;
-            filesContainer.appendChild(fileDiv);
-          });
+          for (let i in data) {
+          }
         }
       })
       .catch((error) => {

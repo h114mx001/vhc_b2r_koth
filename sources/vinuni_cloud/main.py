@@ -39,18 +39,21 @@ def home():
 @app.route("/files", methods=["GET"])
 def get_all_files():
     data = []
-    for file in os.listdir(app.config['UPLOAD_FOLDER']):
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
-        if os.path.isfile(file_path):
-            file_size = os.path.getsize(file_path)
-            file_size = format_size(file_size)
-            file_name = file.split(".")[0]
-            file_type = file.split(".")[1]
-            data.append({
-                "file_name": file_name,
-                "file_type": file_type,
-                "file_size": file_size
-            })
+    try:
+        for file in os.listdir(app.config['UPLOAD_FOLDER']):
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
+            if os.path.isfile(file_path):
+                file_size = os.path.getsize(file_path)
+                file_size = format_size(file_size)
+                file_name = file.split(".")[0]
+                file_type = file.split(".")[1]
+                data.append({
+                    "file_name": file_name,
+                    "file_type": file_type,
+                    "file_size": file_size
+                })
+    except:
+        pass
     return jsonify({"data": data}), 200
 
 
