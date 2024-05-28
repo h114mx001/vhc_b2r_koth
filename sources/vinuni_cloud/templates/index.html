@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VinUni Cloud</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+      .header,
+      .footer {
+        text-align: center;
+        padding: 10px 20px;
+      }
+      .main {
+        background-color: white;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+      }
+      input[type="file"] {
+        display: block;
+        margin-top: 20px;
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      .message {
+        margin-top: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>VinUni Cloud</h1>
+    </div>
+    <div class="main">
+      <h2>Upload Image</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input
+          type="file"
+          id="imageUpload"
+          name="file"
+          accept="image/*"
+          required
+        />
+        <input type="submit" value="Upload Image" />
+      </form>
+      <div class="message" id="message"></div>
+    </div>
+    <div class="footer">
+      <p>© 2024 VinUni Cloud. All rights reserved.</p>
+    </div>
+  </body>
+  <script>
+    document.getElementById("uploadForm").onsubmit = function (event) {
+      event.preventDefault();
+
+      var formData = new FormData();
+      var imageFile = document.getElementById("imageUpload").files[0];
+      formData.append("file", imageFile);
+
+      fetch("/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("message").innerText =
+            "Upload successful: " + data.message;
+        })
+        .catch((error) => {
+          document.getElementById("message").innerText =
+            "Upload failed: " + error.message;
+        });
+    };
+  </script>
+</html>
