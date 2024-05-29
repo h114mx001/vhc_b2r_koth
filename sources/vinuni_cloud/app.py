@@ -1,7 +1,8 @@
 from flask import Flask
 from flask import render_template, request, jsonify, send_file
 from werkzeug.debug import DebuggedApplication
-
+from werkzeug import run_simple
+# import multiprocessing
 import os
 import logging
 
@@ -23,7 +24,8 @@ def format_size(size):
         return f"{round(size / (1024 * 1024), 2)} MB"
 
 @app.route('/')
-def home():
+def home(): 
+    # raise Exception("This is an exception")
     if request.args.get('file'):
         try:
             filename = os.path.join(app.config['UPLOAD_FOLDER'], request.args.get('file'))
@@ -34,11 +36,9 @@ def home():
                         content = open(filename, 'rb').read()
                         return jsonify({"error": "not image", "file_name": filename, "file": content.decode('utf-8')}), 200
                     return send_file(filename, as_attachment=True)
-                    
-                return jsonify({"message": "File cannot read"}), 500
-            return jsonify({"message": "File not found"}), 404
+            raise
         except:
-            pass
+            raise 
     return render_template("index.html") 
 
 
@@ -60,7 +60,7 @@ def get_all_files():
                     "file_size": file_size
                 })
     except:
-        pass
+        raise
     return jsonify({"data": data}), 200
 
 
@@ -83,6 +83,6 @@ def upload_image():
 # @app.route("/console", methods=["GET"])
 
 if __name__ == '__main__':
-    app.debug = True
-    app.wsgi_app = DebuggedApplication(app, evalex=True)
-    app.run(port=5000, host="0.0.0.0")
+    app.wsgi_app = DebuggedApplication(app, evalex=True, console_path='/console', show_hidden_frames=True)
+    app.wsgi_app.trusted_hosts = [".localhost", "127.0.0.1", "0.0.0.0"]
+    run_simple("0.0.0.0", 5000, app, use_debugger=True, use_reloader=True, threaded=True, processes=1)
