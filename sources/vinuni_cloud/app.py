@@ -82,6 +82,7 @@ def upload_image():
 
 # @app.route("/console", methods=["GET"])
 
-# if __name__ == '__main__':
-#     # app = DebuggedApplication(app, evalex=True)
-#     app.run(debug=True, port=5000, host="0.0.0.0")
+if __name__ == '__main__':
+    app.debug = True
+    app.wsgi_app = DebuggedApplication(app, evalex=True)
+    app.run(port=5000, host="0.0.0.0")
