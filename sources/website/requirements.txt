@@ -1,6 +1,0 @@
-Flask
-pycryptodome
-pyjwt
-pwntools
-ansible
-ansible-parallel

@@ -1,0 +1,8 @@
+Flask==2.2.2
+Werkzeug==2.2.2
+pycryptodome
+pyjwt
+pwntools
+ansible
+ansible-parallel
+python-dotenv

@@ -1,6 +1,6 @@
 FROM ubuntu:22.04 
 
-RUN apt-get update -y && apt-get install -y systemctl python3 python3-pip python-is-python3 neovim gcc sudo gdb wget locales cron binutils file
+RUN apt-get update -y && apt-get install -y systemctl curl python3 python3-pip python-is-python3 neovim gcc sudo gdb wget locales cron binutils file 
 
 RUN systemctl enable cron
 RUN systemctl start cron
@@ -20,13 +20,11 @@ RUN adduser werkzeug sudo
 
 WORKDIR /home/werkzeug
 
-RUN mkdir /home/werkzeug/sources
+COPY ./vinuni_cloud /home/werkzeug/vinuni_cloud
 
-COPY ./website /home/werkzeug/sources
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r /home/werkzeug/vinuni_cloud/requirements.txt
 
-RUN --mount=type=cache,target=/root/.cache/pip pip install -r /home/werkzeug/sources/requirements.txt
-
-RUN chown werkzeug:werkzeug /home/werkzeug/sources/uploads
+RUN chown werkzeug:werkzeug /home/werkzeug/vinuni_cloud/uploads
 
 # setuid cat - privesc gadget 1
 RUN chmod +xs /usr/bin/cat 
@@ -36,6 +34,9 @@ RUN chmod +xs /usr/bin/cat
 RUN mkdir -p /opt/automated/tasks/webapp/
 COPY ./ansible /opt/automated/tasks/webapp/
 COPY ./ansible/cron /etc/cron.d/cron
+
+RUN chown -R root:werkzeug /opt/automated/tasks/webapp
+RUN chmod -R 770 /opt/automated/tasks/webapp
 
 # rwx: root, r: group, r: others
 RUN chmod 0644 /etc/cron.d/cron

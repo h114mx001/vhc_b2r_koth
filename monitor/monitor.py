@@ -108,7 +108,7 @@ class KoTH:
             print(f"Error: {e}")
             return False
         
-        rules = ["python3 /home/werkzeug/sources/main.py", r"patch_[a-zA-Z0-9_]+"]
+        rules = ["python3 main.py", r"patch_[a-zA-Z0-9_]+", "cron"]
 
         ### Step 2: Kill the process that is not from the challenge/patch of the users
         try:
