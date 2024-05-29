@@ -4,3 +4,4 @@ pyjwt
 pwntools
 ansible
 ansible-parallel
+python-dotenv

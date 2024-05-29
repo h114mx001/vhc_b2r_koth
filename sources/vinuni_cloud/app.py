@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import render_template, request, jsonify, send_file
+from werkzeug.debug import DebuggedApplication
 
 import os
 import logging
@@ -79,6 +80,8 @@ def upload_image():
         file.save(filepath)
         return jsonify({'message': f'File {filename} uploaded successfully'}), 200
 
+# @app.route("/console", methods=["GET"])
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000, host="0.0.0.0")
+# if __name__ == '__main__':
+#     # app = DebuggedApplication(app, evalex=True)
+#     app.run(debug=True, port=5000, host="0.0.0.0")
