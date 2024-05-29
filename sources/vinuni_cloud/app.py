@@ -1,10 +1,8 @@
 from flask import Flask
 from flask import render_template, request, jsonify, send_file
-from werkzeug.debug import DebuggedApplication
-from werkzeug import run_simple
 # import multiprocessing
 import os
-import logging
+
 
 app = Flask(__name__)
 
@@ -80,9 +78,5 @@ def upload_image():
         file.save(filepath)
         return jsonify({'message': f'File {filename} uploaded successfully'}), 200
 
-# @app.route("/console", methods=["GET"])
-
 if __name__ == '__main__':
-    app.wsgi_app = DebuggedApplication(app, evalex=True, console_path='/console', show_hidden_frames=True)
-    app.wsgi_app.trusted_hosts = [".localhost", "127.0.0.1", "0.0.0.0"]
-    run_simple("0.0.0.0", 5000, app, use_debugger=True, use_reloader=True, threaded=True, processes=1)
+    app.run(debug=True, host='0.0.0.0', port=5000)
